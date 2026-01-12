@@ -5,7 +5,7 @@ M.defaults = {
     auto_detect = true,
 
     -- Quantas linhas do topo do arquivo analisar (performance)
-    lines_to_check = 50,
+    lines_to_check = 100,
 
     -- Modo interativo: se true, pergunta antes de mudar
     interactive = false,
