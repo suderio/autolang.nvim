@@ -9,6 +9,10 @@ A lightweight, pure Lua plugin for Neovim that automatically detects the natural
 -  *Support*: English, Portuguese, Spanish, French, German, and Chinese.
 -  *Configurable*: Supports interactive mode (ask before changing) and dialect mapping (e.g., pt -> pt_BR or pt_PT).
 
+** Motivation
+
+This is a very simple plugin to address a very simple need. The detection algorithm uses list of frequently used words in each language, which is *very* naive.
+
 ** Installation
 
 *** Lazy.nvim (Recommended)
@@ -79,6 +83,8 @@ require("autolang").setup({
 })
 #+END_SRC
 
-** Commands
+** Future Improvements
 
-- =:AutolangDetect= : Forces a manual detection on the current buffer.
+- Use trigrams instead of frequent words for language detection
+- Allow regional selection when possible (i.e. pt -> pt_PT or pt_BR)
+
