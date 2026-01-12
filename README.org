@@ -1,0 +1,84 @@
+* Autolang.nvim
+
+Um plugin leve e puramente em Lua para Neovim que detecta automaticamente a linguagem natural do buffer atual e ajusta a opção =spelllang=.
+
+** Características
+
+- ?? *Zero Dependências*: Escrito em Pure Lua. Sem Python, Node ou binários externos.
+- ? *Rápido*: Usa heurística de "Stop Words" (frequência de palavras) nas primeiras 50 linhas.
+- ?? *Suporte*: Inglês, Português, Espanhol, Francês, Alemão e Chinês.
+- ?? *Configurável*: Suporte a modo interativo (pergunta antes de mudar) e mapeamento de dialetos (ex: pt -> pt_BR).
+
+** Instalação
+
+*** Lazy.nvim (Recomendado)
+
+#+BEGIN_SRC lua
+{
+  "seu-usuario/autolang.nvim", -- Substitua pelo caminho local ou repo git
+  event = { "BufReadPost", "BufWritePost" },
+  config = function()
+    require("autolang").setup({
+        -- Suas configurações aqui (opcional)
+    })
+  end
+}
+#+END_SRC
+
+*** Packer.nvim
+
+#+BEGIN_SRC lua
+use {
+  "seu-usuario/autolang.nvim",
+  config = function()
+    require("autolang").setup()
+  end
+}
+#+END_SRC
+
+*** Vim-Plug
+
+#+BEGIN_SRC vim
+Plug 'seu-usuario/autolang.nvim'
+" Adicione ao seu init.lua ou init.vim:
+" lua require('autolang').setup()
+#+END_SRC
+
+** Configuração
+
+O setup padrão funciona para a maioria dos casos. Abaixo estão todas as opções disponíveis:
+
+#+BEGIN_SRC lua
+require("autolang").setup({
+    -- Ativa a detecção automática ao abrir (BufRead) e salvar (BufWrite)
+    auto_detect = true,
+
+    -- Modo Interativo:
+    -- false: Muda silenciosamente (default)
+    -- true: Abre um menu perguntando se deseja mudar
+    interactive = false,
+
+    -- Limite de performance: Quantas linhas ler do início do arquivo
+    lines_to_check = 50,
+
+    -- Limitar as linguagens que serão verificadas.
+    -- Útil se você só escreve em Inglês e Português.
+    -- Deixe nil para verificar todas.
+    limit_languages = { "en", "pt" },
+
+    -- Mapeamento de detecção -> spelllang do Vim
+    -- Útil para forçar pt_BR, pt_PT, en_GB, etc.
+    lang_mapping = {
+      en = "en_us",
+      pt = "pt_br", -- Mude para 'pt_pt' se preferir Português de Portugal
+      es = "es",
+      fr = "fr",
+      de = "de",
+      zh = "cjk",
+    },
+                         })
+#+END_SRC
+
+** Comandos
+
+- =:AutolangDetect= : Força uma redetecção manual no buffer atual.
