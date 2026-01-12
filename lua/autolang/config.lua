@@ -14,15 +14,23 @@ M.defaults = {
     -- Exemplo para limitar: { "en", "pt" }
     limit_languages = nil,
 
-    -- Mapeamento do código detectado para o 'spelllang' do vim
-    -- É aqui que diferenciamos pt_BR de pt_PT
+    -- IMPORTANTE:
+    -- As chaves (Lado Esquerdo) devem corresponder EXATAMENTE ao nome do arquivo
+    -- na pasta 'lua/autolang/trigrams/' (sem o .lua).
+    -- Os valores (Lado Direito) são o 'set spelllang=...' do Vim.
     lang_mapping = {
-        en = "en_us",
-        pt = "pt_br", -- Altere para pt_pt se preferir
-        es = "es",
-        fr = "fr",
-        de = "de",
-        zh = "cjk",   -- Ou nil, já que spellcheck em chinês é raro
+        -- Arquivos de Trigramas (Latinos)
+        en    = "en",    -- Carrega: lua/autolang/trigrams/en.lua
+        pt_BR = "pt_br",    -- Carrega: lua/autolang/trigrams/pt_BR.lua
+        es    = "es",       -- Carrega: lua/autolang/trigrams/es.lua
+        fr    = "fr",       -- Carrega: lua/autolang/trigrams/fr.lua
+        de    = "de",       -- Carrega: lua/autolang/trigrams/de.lua
+
+        -- Detecção via Script (Unicode)
+        -- Estas chaves são usadas quando a detecção de script (CJK/Cirílico) dispara.
+        -- Elas NÃO precisam de arquivos na pasta trigrams, pois são ignoradas no loop de distância.
+        zh    = "cjk",      -- Chinês (Detectado por Range Unicode)
+        ru    = "ru",       -- Russo (Detectado por Range Unicode)
     },
 }
 
