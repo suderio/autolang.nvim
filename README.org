@@ -97,11 +97,7 @@ require("autolang").setup({
 The plugin understands the structure of these files. It extracts text from specific nodes (e.g., `comment`, `string`, `paragraph`) and ignores code.
 
 | Category | Filetypes |
-<<<<<<< HEAD
-| :--- | :--- |
-=======
 | ---  | ---  |
->>>>>>> c7fceb4 (Cleanup)
 | *Markup & Prose* | =markdown=, =typst=, =org=, =html=, =xml=, =latex=, =gitcommit= |
 | *Web Dev* | =javascript=, =typescript=, =tsx=, =javascriptreact=, =css=, =scss=, =json=, =yaml=, =toml= |
 | *Backend/Sys* | =lua=, =python=, =rust=, =go=, =c=, =cpp=, =java=, =bash= |
