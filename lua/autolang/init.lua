@@ -6,18 +6,8 @@ M.opts = {}
 local profiles_cache = {}
 local MAX_PENALTY = 300
 --------------------------------------------------------------------------------
--- 0. Utilities
+-- Utilities
 --------------------------------------------------------------------------------
-local function is_binary_or_huge(buf)
-    -- Check if 'binary' option is set
-    if vim.bo[buf].binary then return true end
-
-    -- Check file size (e.g., skip if > 1MB)
-    local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(buf))
-    if stats and stats.size > 1024 * 1024 then return true end
-
-    return false
-end
 local function is_valid_buffer(buf)
     if not vim.api.nvim_buf_is_valid(buf) then return false end
     if vim.bo[buf].buftype ~= "" then return false end
@@ -32,7 +22,7 @@ local function is_valid_buffer(buf)
     return true
 end
 --------------------------------------------------------------------------------
--- 1. Tree-sitter
+-- Tree-sitter
 --------------------------------------------------------------------------------
 
 local ts_queries = {
@@ -208,7 +198,7 @@ local function get_sample_text(buf, lines_limit)
 end
 
 --------------------------------------------------------------------------------
--- 2. Text & Trigrams
+-- Text & Trigrams
 --------------------------------------------------------------------------------
 
 local function clean_text(text)
@@ -249,7 +239,7 @@ local function get_document_profile(text)
 end
 
 --------------------------------------------------------------------------------
--- 3. Lang Profiles
+-- Lang Profiles
 --------------------------------------------------------------------------------
 
 local function load_lang_profile(lang_code)
@@ -282,7 +272,7 @@ local function calculate_distance(doc_profile, lang_rank_map)
 end
 
 --------------------------------------------------------------------------------
--- 4. Script detection
+-- Script detection
 --------------------------------------------------------------------------------
 
 local function detect_script(text_sample)
@@ -296,7 +286,7 @@ local function detect_script(text_sample)
 end
 
 --------------------------------------------------------------------------------
--- 5. Main logic
+-- Main logic
 --------------------------------------------------------------------------------
 
 function M.detect_and_set()
@@ -375,7 +365,7 @@ function M.setup(user_opts)
         })
     end
 
-    -- Comandos de Detecção
+    -- Detection
     vim.api.nvim_create_user_command("AutolangDetect", function()
         -- Força a execução mesmo se auto_detect for false, mas respeita valid buffer
         local old_val = M.opts.auto_detect
@@ -384,7 +374,7 @@ function M.setup(user_opts)
         M.opts.auto_detect = old_val
     end, {})
 
-    -- Comandos de Toggle (Novos)
+    -- Toggle Commands
     vim.api.nvim_create_user_command("AutolangEnable", function()
         M.opts.auto_detect = true
         vim.notify("Autolang enabled", vim.log.levels.INFO)
