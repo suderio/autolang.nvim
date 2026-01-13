@@ -1,0 +1,134 @@
+*autolang.txt* Context-aware language detection for Neovim
+
+Author:  Seu Nome <seu@email.com>
+License: MIT
+URL:     https://github.com/seu-usuario/autolang.nvim
+
+==============================================================================
+CONTENTS                                                    *autolang-contents*
+
+    1. Introduction .............................. |autolang-intro|
+    2. Setup ..................................... |autolang-setup|
+    3. Configuration ............................. |autolang-config|
+    4. Commands .................................. |autolang-commands|
+    5. Supported Languages ....................... |autolang-languages|
+    6. Health Check .............................. |autolang-health|
+
+==============================================================================
+1. INTRODUCTION                                                *autolang-intro*
+
+Autolang.nvim automatically detects the natural language of the current buffer
+and sets the 'spelllang' option accordingly.
+
+It combines two powerful methods for high accuracy:
+1. Tree-sitter Context: Extracts only human text (comments, strings, docstrings),
+   ignoring code syntax to prevent false positives.
+2. Trigram Analysis: Uses statistical profiling (Cavnar & Trenkle algorithm) to
+   distinguish between linguistically close languages (e.g., pt_BR vs pt_PT).
+
+It also features "Fail-Fast" detection for exclusive scripts like CJK (Chinese)
+and Cyrillic (Russian).
+
+==============================================================================
+2. SETUP                                                       *autolang-setup*
+
+Install using your favorite package manager.
+
+Using lazy.nvim: >lua
+    {
+        "suderio/autolang.nvim",
+        event = { "BufReadPost", "BufWritePost" },
+        config = function()
+            require("autolang").setup({})
+        end
+    }
+<
+
+Using packer.nvim: >lua
+    use {
+        "suderio/autolang.nvim",
+        config = function()
+            require("autolang").setup()
+        end
+    }
+<
+
+==============================================================================
+3. CONFIGURATION                                              *autolang-config*
+
+The setup function accepts a table with the following options. Defaults are shown
+below:
+
+>lua
+    require("autolang").setup({
+        -- Enable auto-detection on BufRead and BufWrite
+        auto_detect = true,
+
+        -- Interactive Mode:
+        -- false: Changes 'spelllang' silently (default)
+        -- true: Opens a prompt asking if you want to change the language
+        interactive = false,
+
+        -- How many lines of "human text" to analyze.
+        lines_to_check = 50,
+
+        -- Limit the detection to specific languages.
+        -- If nil, checks against ALL keys defined in 'lang_mapping'.
+        -- Example: limit_languages = { "en", "pt_BR" },
+        limit_languages = nil,
+
+        -- Mapping: [Trigram Filename] = [Vim 'spelllang' Option]
+        -- Keys match filenames in lua/autolang/trigrams/
+        lang_mapping = {
+            en    = "en_us",
+            pt_BR = "pt_br",
+            es    = "es",
+            fr    = "fr",
+            de    = "de",
+            ru    = "ru",  -- Detected via Cyrillic Script check
+            zh    = "cjk", -- Detected via CJK Unicode check
+        },
+    })
+<
+
+==============================================================================
+4. COMMANDS                                                 *autolang-commands*
+
+:AutolangDetect                                               * :AutolangDetect*
+    Forces a manual language detection on the current buffer. Useful if you
+    pasted text after opening the file.
+
+:AutolangEnable                                               * :AutolangEnable*
+    Enables auto-detection globally.
+
+:AutolangDisable                                             * :AutolangDisable*
+    Disables auto-detection globally.
+
+==============================================================================
+5. SUPPORTED LANGUAGES                                     *autolang-languages*
+
+The plugin supports over 60 languages via trigram profiles.
+Common codes include:
+
+    *en* - English
+    *pt_BR* - Portuguese (Brazil)
+    *pt_PT* - Portuguese (Portugal)
+    *es* - Spanish
+    *fr* - French
+    *de* - German
+    *it* - Italian
+    *ru* - Russian (Script detection)
+    *zh* - Chinese (Script detection)
+
+For the full list of codes, inspect the `lua/autolang/trigrams/` directory.
+
+==============================================================================
+6. HEALTH CHECK                                               *autolang-health*
+
+To verify if dependencies (Tree-sitter) and data files are correctly installed,
+run:
+
+    :checkhealth autolang
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:

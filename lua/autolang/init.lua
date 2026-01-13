@@ -5,7 +5,32 @@ M.opts = {}
 
 local profiles_cache = {}
 local MAX_PENALTY = 300
+--------------------------------------------------------------------------------
+-- 0. Utilities
+--------------------------------------------------------------------------------
+local function is_binary_or_huge(buf)
+    -- Check if 'binary' option is set
+    if vim.bo[buf].binary then return true end
 
+    -- Check file size (e.g., skip if > 1MB)
+    local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(buf))
+    if stats and stats.size > 1024 * 1024 then return true end
+
+    return false
+end
+local function is_valid_buffer(buf)
+    if not vim.api.nvim_buf_is_valid(buf) then return false end
+    if vim.bo[buf].buftype ~= "" then return false end
+
+    -- Ignora binários
+    if vim.bo[buf].binary then return false end
+
+    -- Ignora arquivos gigantes (> 1MB) para evitar travar a UI
+    local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+    if ok and stats and stats.size > 1024 * 1024 then return false end
+
+    return true
+end
 --------------------------------------------------------------------------------
 -- 1. Tree-sitter
 --------------------------------------------------------------------------------
@@ -275,7 +300,11 @@ end
 --------------------------------------------------------------------------------
 
 function M.detect_and_set()
+    if not M.opts.auto_detect then return end
+
     local buf = vim.api.nvim_get_current_buf()
+
+    if not is_valid_buffer(buf) then return end
 
     if vim.bo[buf].buftype ~= "" or not vim.api.nvim_buf_is_valid(buf) then return end
 
@@ -346,7 +375,28 @@ function M.setup(user_opts)
         })
     end
 
-    vim.api.nvim_create_user_command("AutolangDetect", M.detect_and_set, {})
+    -- Comandos de Detecção
+    vim.api.nvim_create_user_command("AutolangDetect", function()
+        -- Força a execução mesmo se auto_detect for false, mas respeita valid buffer
+        local old_val = M.opts.auto_detect
+        M.opts.auto_detect = true
+        M.detect_and_set()
+        M.opts.auto_detect = old_val
+    end, {})
+
+    -- Comandos de Toggle (Novos)
+    vim.api.nvim_create_user_command("AutolangEnable", function()
+        M.opts.auto_detect = true
+        vim.notify("Autolang enabled", vim.log.levels.INFO)
+    end, {})
+
+    vim.api.nvim_create_user_command("AutolangDisable", function()
+        M.opts.auto_detect = false
+        vim.notify("Autolang disabled", vim.log.levels.INFO)
+    end, {})
 end
+
+-- Register health check
+M.health = require("autolang.health")
 
 return M
