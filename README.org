@@ -2,11 +2,11 @@
 
 An intelligent, context-aware plugin for Neovim that automatically detects the natural language of the current buffer and adjusts the =spelllang= option.
 
-Unlike simple language detectors, **Autolang.nvim** uses **Tree-sitter** to extract only the relevant text (comments, strings, and prose), ignoring code syntax to prevent false positives. It employs the industry-standard **Trigram-based text categorization** (Cavnar & Trenkle algorithm) for high accuracy even on short texts.
+Unlike simple language detectors, *Autolang.nvim* uses *Tree-sitter* to extract only the relevant text (comments, strings, and prose), ignoring code syntax to prevent false positives. It employs the industry-standard *Trigram-based text categorization* (Cavnar & Trenkle algorithm) for high accuracy even on short texts.
 
 ** Features
-- *Context Aware*: Uses **Tree-sitter** to analyze *only* comments, docstrings, and prose. It ignores keywords like =function=, =import=, or =var= that confuse standard detectors.
-- *Statistical Accuracy*: Uses **Trigram N-Grams** profiles (based on the Cavnar & Trenkle 1994 paper) to distinguish between linguistically close languages (e.g., pt_BR vs. pt_PT).
+- *Context Aware*: Uses *Tree-sitter* to analyze *only* comments, docstrings, and prose. It ignores keywords like =function=, =import=, or =var= that confuse standard detectors.
+- *Statistical Accuracy*: Uses *Trigram N-Grams* profiles (based on the Cavnar & Trenkle 1994 paper) to distinguish between linguistically close languages (e.g., pt_BR vs. pt_PT).
 - *Performance*: Fast startup with "Fail-Fast" Unicode script detection (e.g., immediately identifies Chinese/CJK or Russian/Cyrillic without running complex analysis).
 - *Extensive Support*: bundled with profiles for over 60 languages and dialects.
 - *Zero External Dependencies*: Written in Pure Lua. No Python, Node, or CLI tools required.
@@ -98,15 +98,15 @@ The plugin understands the structure of these files. It extracts text from speci
 
 | Category | Filetypes |
 | :--- | :--- |
-| **Markup & Prose** | =markdown=, =typst=, =org=, =html=, =xml=, =latex=, =gitcommit= |
-| **Web Dev** | =javascript=, =typescript=, =tsx=, =javascriptreact=, =css=, =scss=, =json=, =yaml=, =toml= |
-| **Backend/Sys** | =lua=, =python=, =rust=, =go=, =c=, =cpp=, =java=, =bash= |
+| *Markup & Prose* | =markdown=, =typst=, =org=, =html=, =xml=, =latex=, =gitcommit= |
+| *Web Dev* | =javascript=, =typescript=, =tsx=, =javascriptreact=, =css=, =scss=, =json=, =yaml=, =toml= |
+| *Backend/Sys* | =lua=, =python=, =rust=, =go=, =c=, =cpp=, =java=, =bash= |
 
 *Note:* If a filetype is not listed or Tree-sitter is missing, the plugin falls back to analyzing the raw lines of the file.
 
 *** 2. Supported Languages (Trigram Profiles)
 
-The plugin includes pre-calculated statistical profiles for **64 languages and dialects**. Use the **Code** column as the key in your `lang_mapping` configuration.
+The plugin includes pre-calculated statistical profiles for *64 languages and dialects*. Use the *Code* column as the key in your `lang_mapping` configuration.
 
 | Code | Language | Code | Language | Code | Language |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -135,9 +135,9 @@ The plugin includes pre-calculated statistical profiles for **64 languages and d
 
 ** How it Works
 
-1.  **Extraction**: When you open a buffer, `autolang` asks Tree-sitter for "content nodes". In a Python file, it gets docstrings; in Markdown, paragraphs.
-2.  **Script Detection**: It scans the text for exclusive scripts. If it finds CJK characters, it detects Chinese/Japanese immediately. If Cyrillic, it detects Russian/Ukrainian.
-3.  **Trigram Analysis**: If the text is Latin-based, it calculates the frequency of 3-letter sequences (trigrams) and compares the "distance" against the loaded language profiles. The profile with the lowest distance wins.
+1.  *Extraction*: When you open a buffer, `autolang` asks Tree-sitter for "content nodes". In a Python file, it gets docstrings; in Markdown, paragraphs.
+2.  *Script Detection*: It scans the text for exclusive scripts. If it finds CJK characters, it detects Chinese/Japanese immediately. If Cyrillic, it detects Russian/Ukrainian.
+3.  *Trigram Analysis*: If the text is Latin-based, it calculates the frequency of 3-letter sequences (trigrams) and compares the "distance" against the loaded language profiles. The profile with the lowest distance wins.
 
 ** Commands
 
