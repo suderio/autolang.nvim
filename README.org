@@ -155,4 +155,4 @@ If the detection seems inaccurate:
 ** Credits
 
 - Algorithm based on *N-Gram-Based Text Categorization* by William B. Cavnar and John M. Trenkle (1994).
-- Trigram data adapted from the [[https://github.com/kent37/guess-language][kent37/guess-language] project.
+- Trigram data adapted from the [[https://github.com/kent37/guess-language][kent37/guess-language]] project.
