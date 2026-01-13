@@ -97,7 +97,11 @@ require("autolang").setup({
 The plugin understands the structure of these files. It extracts text from specific nodes (e.g., `comment`, `string`, `paragraph`) and ignores code.
 
 | Category | Filetypes |
+<<<<<<< HEAD
 | :--- | :--- |
+=======
+| ---  | ---  |
+>>>>>>> c7fceb4 (Cleanup)
 | *Markup & Prose* | =markdown=, =typst=, =org=, =html=, =xml=, =latex=, =gitcommit= |
 | *Web Dev* | =javascript=, =typescript=, =tsx=, =javascriptreact=, =css=, =scss=, =json=, =yaml=, =toml= |
 | *Backend/Sys* | =lua=, =python=, =rust=, =go=, =c=, =cpp=, =java=, =bash= |
@@ -109,7 +113,7 @@ The plugin understands the structure of these files. It extracts text from speci
 The plugin includes pre-calculated statistical profiles for *64 languages and dialects*. Use the *Code* column as the key in your `lang_mapping` configuration.
 
 | Code | Language | Code | Language | Code | Language |
-| :--- | :--- | :--- | :--- | :--- | :--- |
+| ---  | ---  | ---  | ---  | ---  | ---  |
 | =af= | Afrikaans | =ha= | Hausa | =pt= | Portuguese (General) |
 | =ar= | Arabic | =haw= | Hawaiian | =pt_BR= | Portuguese (Brazil) |
 | =az= | Azerbaijani | =hi= | Hindi | =pt_PT= | Portuguese (Portugal) |
