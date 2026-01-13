@@ -1,17 +1,20 @@
 * Autolang.nvim
 
-A lightweight, pure Lua plugin for Neovim that automatically detects the natural language of the current buffer and adjusts the =spelllang= option accordingly.
+An intelligent, context-aware plugin for Neovim that automatically detects the natural language of the current buffer and adjusts the =spelllang= option.
+
+Unlike simple language detectors, **Autolang.nvim** uses **Tree-sitter** to extract only the relevant text (comments, strings, and prose), ignoring code syntax to prevent false positives. It employs the industry-standard **Trigram-based text categorization** (Cavnar & Trenkle algorithm) for high accuracy even on short texts.
 
 ** Features
-
--  *Zero Dependencies*: Written in Pure Lua. No Python, Node, or external binaries required.
--  *Fast*: Uses a "Stop Words" heuristic (word frequency) on the first 50 lines of the buffer.
--  *Support*: English, Portuguese, Spanish, French, German, and Chinese.
--  *Configurable*: Supports interactive mode (ask before changing) and dialect mapping (e.g., pt -> pt_BR or pt_PT).
+- *Context Aware*: Uses **Tree-sitter** to analyze *only* comments, docstrings, and prose. It ignores keywords like =function=, =import=, or =var= that confuse standard detectors.
+- *Statistical Accuracy*: Uses **Trigram N-Grams** profiles (based on the Cavnar & Trenkle 1994 paper) to distinguish between linguistically close languages (e.g., pt_BR vs. pt_PT).
+- *Performance*: Fast startup with "Fail-Fast" Unicode script detection (e.g., immediately identifies Chinese/CJK or Russian/Cyrillic without running complex analysis).
+- *Extensive Support*: bundled with profiles for over 60 languages and dialects.
+- *Zero External Dependencies*: Written in Pure Lua. No Python, Node, or CLI tools required.
+- *Configurable*: Supports interactive mode (ask before changing) and dialect mapping (e.g., pt -> pt_BR or pt_PT).
 
 ** Motivation
 
-This is a very simple plugin to address a very simple need. The detection algorithm uses list of frequently used words in each language, which is *very* naive.
+This is a very simple plugin to address a very simple need. There are not a ton of options. But it gets the job done.
 
 ** Installation
 
@@ -50,11 +53,11 @@ Plug 'suderio/autolang.nvim'
 
 ** Configuration
 
-The default setup works for most use cases. Below are all available options:
+The configuration maps the *detected language profile* (keys) to your Neovim *spelllang setting* (values).
 
 #+BEGIN_SRC lua
 require("autolang").setup({
-    -- Enable auto-detection on buffer open (BufRead) and save (BufWrite)
+    -- Enable auto-detection
     auto_detect = true,
 
     -- Interactive Mode:
@@ -62,29 +65,80 @@ require("autolang").setup({
     -- true: Opens a prompt asking if you want to change the language
     interactive = false,
 
-    -- Performance limit: Number of lines to read from the start of the file
+    -- How many lines of "human text" to analyze.
+    -- Since we use Tree-sitter to strip code, 50 lines is usually enough.
     lines_to_check = 50,
 
-    -- Limit the languages to check against.
-    -- Useful if you only write in specific languages (e.g., English and Portuguese).
-    -- Set to nil to check all available languages.
-    limit_languages = { "en", "pt" },
+    -- Limit the detection to specific languages.
+    -- OPTIONAL: If nil, checks against ALL keys defined in 'lang_mapping'.
+    -- limit_languages = { "en", "pt_BR" },
 
-    -- Mapping of detected language code -> Vim's 'spelllang' option
-    -- This is where you differentiate dialects (e.g., pt_BR vs pt_PT, en_US vs en_GB)
+    -- Mapping: [Trigram Filename] = [Vim 'spelllang' Option]
+    -- The keys MUST match the filenames in lua/autolang/trigrams/
     lang_mapping = {
-        en = "en_us",
-        pt = "pt_br", -- Change to 'pt_pt' for European Portuguese
-        es = "es",
-        fr = "fr",
-        de = "de",
-        zh = "cjk",
+      en    = "en",
+      pt_BR = "pt_br",
+      pt_PT = "pt_pt",
+      es    = "es",
+      fr    = "fr",
+      de    = "de",
+      it    = "it",
+      ru    = "ru",  -- Detected via Cyrillic Script check
+      zh    = "cjk", -- Detected via CJK Unicode check
+      -- Add any other supported language here...
     },
-})
+                         })
+
 #+END_SRC
 
-** Future Improvements
+** Supported Capabilities
 
-- Use trigrams instead of frequent words for language detection
-- Allow regional selection when possible (i.e. pt -> pt_PT or pt_BR)
+*** 1. Context-Aware Filetypes (Tree-sitter)
+The plugin understands the structure of these files. It extracts text from specific nodes (e.g., `comment`, `string`, `paragraph`) and ignores code.
 
+| Category | Filetypes |
+| :--- | :--- |
+| **Markup & Prose** | =markdown=, =typst=, =org=, =html=, =xml=, =latex=, =gitcommit= |
+| **Web Dev** | =javascript=, =typescript=, =tsx=, =javascriptreact=, =css=, =scss=, =json=, =yaml=, =toml= |
+| **Backend/Sys** | =lua=, =python=, =rust=, =go=, =c=, =cpp=, =java=, =bash= |
+
+*Note:* If a filetype is not listed or Tree-sitter is missing, the plugin falls back to analyzing the raw lines of the file.
+
+*** 2. Supported Languages (Trigram Profiles)
+
+The plugin includes pre-calculated statistical profiles for **64 languages and dialects**. Use the **Code** column as the key in your `lang_mapping` configuration.
+
+| Code | Language | Code | Language | Code | Language |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| =af= | Afrikaans | =ha= | Hausa | =pt= | Portuguese (General) |
+| =ar= | Arabic | =haw= | Hawaiian | =pt_BR= | Portuguese (Brazil) |
+| =az= | Azerbaijani | =hi= | Hindi | =pt_PT= | Portuguese (Portugal) |
+| =bg= | Bulgarian | =hr= | Croatian | =ro= | Romanian |
+| =ca= | Catalan | =hu= | Hungarian | =ru= | Russian |
+| =ceb= | Cebuano | =id= | Indonesian | =sk= | Slovak |
+| =cs= | Czech | =is= | Icelandic | =sl= | Slovenian |
+| =cy= | Welsh | =it= | Italian | =so= | Somali |
+| =da= | Danish | =kk= | Kazakh | =sq= | Albanian |
+| =de= | German | =ky= | Kyrgyz | =sr= | Serbian |
+| =en= | English | =la= | Latin | =ss= | Swati |
+| =es= | Spanish | =lt= | Lithuanian | =st= | Southern Sotho |
+| =et= | Estonian | =lv= | Latvian | =sv= | Swedish |
+| =eu= | Basque | =mk= | Macedonian | =sw= | Swahili |
+| =fa= | Persian | =mn= | Mongolian | =tl= | Tagalog |
+| =fi= | Finnish | =nb= | Norwegian (Bokmål) | =tlh= | Klingon |
+| =fr= | French | =ne= | Nepali | =tn= | Tswana |
+| =nl= | Dutch | =tr= | Turkish | =ts= | Tsonga |
+| =nr= | Southern Ndebele | =uk= | Ukrainian | =ur= | Urdu |
+| =nso= | Northern Sotho | =uz= | Uzbek | =ve= | Venda |
+| =pl= | Polish | =xh= | Xhosa | =zu= | Zulu |
+| =ps= | Pashto | | | | |
+
+** How it Works
+
+1.  **Extraction**: When you open a buffer, `autolang` asks Tree-sitter for "content nodes". In a Python file, it gets docstrings; in Markdown, paragraphs.
+2.  **Script Detection**: It scans the text for exclusive scripts. If it finds CJK characters, it detects Chinese/Japanese immediately. If Cyrillic, it detects Russian/Ukrainian.
+3.  **Trigram Analysis**: If the text is Latin-based, it calculates the frequency of 3-letter sequences (trigrams) and compares the "distance" against the loaded language profiles. The profile with the lowest distance wins.
+
+** Commands
+
+- =:AutolangDetect= : Forces a manual detection on the current buffer.
