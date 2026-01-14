@@ -1,0 +1,3 @@
+his is a simple plugin to address a simple need. But it gets the job done.
+
+My main use is for hopping between files in different languages. Something non english speaking programmers do a lot between english and a mother language. So, to avoid annoying set spelllang every time — or lots and lots of even more annoying spelling errors — autolang.nvim seems a decent relief for a somewhat scratch-able itch.
