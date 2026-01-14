@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.3](https://github.com/suderio/autolang.nvim/compare/v0.0.2...v0.0.3) (2026-01-14)
+
+
+### Bug Fixes
+
+* Error when saving big files ([b2c3e15](https://github.com/suderio/autolang.nvim/commit/b2c3e15a335db2da7647ee95ccb69a8ecfe52735))
+* spelling ([1325b0d](https://github.com/suderio/autolang.nvim/commit/1325b0d132aac556fa16d9d52650f38d38acccd5))
+
 ## [0.0.2](https://github.com/suderio/autolang.nvim/compare/0.0.1...v0.0.2) (2026-01-13)
 
 
