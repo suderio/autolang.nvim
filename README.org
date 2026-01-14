@@ -4,6 +4,8 @@ An intelligent, context-aware plugin for Neovim that automatically detects the n
 
 Unlike naive language detectors, it uses *Tree-sitter* to extract only the relevant text (comments, strings, and prose), ignoring code syntax to prevent false positives. It employs the *Trigram-based text categorization* for high accuracy even on short texts.
 
+[[file:assets/autolang.gif]]
+
 ** Motivation
 
 This is a simple plugin to address a simple need. But it gets the job done.
@@ -140,6 +142,10 @@ If the detection seems inaccurate:
 1. Run =:checkhealth autolang= to ensure dependencies are met.
 2. If you are editing a code file (e.g., Python), ensure you have the relevant Tree-sitter parser installed: =:TSInstall python=.
 3. If the file is very short (< 30 characters), detection is skipped to avoid false positives.
+  
+** Known Problems
+
+- Org file processing is very slow. Looks like the complexity of its Tree-sitter is the culprit.
 
 ** Credits
 
