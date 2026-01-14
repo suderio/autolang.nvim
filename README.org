@@ -76,21 +76,6 @@ require("autolang").setup({
     -- OPTIONAL: If nil, checks against ALL keys defined in 'lang_mapping'.
     -- This is likely the best way to improve performance.
     -- limit_languages = { "en", "pt_BR" },
-
-    -- Mapping: [Trigram Filename] = [Vim 'spelllang' Option]
-    -- The keys MUST match the filenames in lua/autolang/trigrams/
-    lang_mapping = {
-      en    = "en",
-      pt_BR = "pt_br",
-      pt_PT = "pt_pt",
-      es    = "es",
-      fr    = "fr",
-      de    = "de",
-      it    = "it",
-      ru    = "ru",  -- Detected via Cyrillic Script check
-      zh    = "cjk", -- Detected via CJK Unicode check
-      -- Add any other supported language here...
-    },
                          })
 
 #+END_SRC
