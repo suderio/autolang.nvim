@@ -2,19 +2,21 @@
 
 An intelligent, context-aware plugin for Neovim that automatically detects the natural language of the current buffer and adjusts the =spelllang= option.
 
-Unlike simple language detectors, *Autolang.nvim* uses *Tree-sitter* to extract only the relevant text (comments, strings, and prose), ignoring code syntax to prevent false positives. It employs the industry-standard *Trigram-based text categorization* (Cavnar & Trenkle algorithm) for high accuracy even on short texts.
-
-** Features
-- *Context Aware*: Uses *Tree-sitter* to analyze *only* comments, docstrings, and prose. It ignores keywords like =function=, =import=, or =var= that confuse standard detectors.
-- *Statistical Accuracy*: Uses *Trigram N-Grams* profiles (based on the Cavnar & Trenkle 1994 paper) to distinguish between linguistically close languages (e.g., pt_BR vs. pt_PT).
-- *Performance*: Fast startup with "Fail-Fast" Unicode script detection (e.g., immediately identifies Chinese/CJK or Russian/Cyrillic without running complex analysis).
-- *Extensive Support*: bundled with profiles for over 60 languages and dialects.
-- *Zero External Dependencies*: Written in Pure Lua. No Python, Node, or CLI tools required.
-- *Configurable*: Supports interactive mode (ask before changing) and dialect mapping (e.g., pt -> pt_BR or pt_PT).
+Unlike naive language detectors, it uses *Tree-sitter* to extract only the relevant text (comments, strings, and prose), ignoring code syntax to prevent false positives. It employs the *Trigram-based text categorization* for high accuracy even on short texts.
 
 ** Motivation
 
-This is a very simple plugin to address a very simple need. There are not a ton of options. But it gets the job done.
+This is a simple plugin to address a simple need. But it gets the job done.
+
+My main use is for hopping between files in different languages. Something non english speaking programmers do a lot between english and a mother language. So, to avoid annoying ~set spelllang~ every time --- or lots and lots of even more annoying spelling errors --- ~autolang.nvim~ seems a decent relief for a somewhat scratch-able itch.
+
+** Features
+- Uses *Tree-sitter* to analyze *only* comments, docstrings, and prose. It ignores keywords like =function=, =import=, or =var= that confuse standard detectors.
+- Uses *Trigram N-Grams* profiles (based on the Cavnar & Trenkle 1994 paper) to distinguish between linguistically close languages (e.g., pt_BR vs. pt_PT).
+- Fast startup with "Fail-Fast" Unicode script detection (e.g., immediately identifies Chinese/CJK or Russian/Cyrillic without running complex analysis).
+- Bundled with profiles for over 60 languages and dialects.
+- Written in Pure Lua. No Python, Node, or CLI tools required.
+- Supports interactive mode (ask before changing language).
 
 ** Installation
 
@@ -67,10 +69,12 @@ require("autolang").setup({
 
     -- How many lines of "human text" to analyze.
     -- Since we use Tree-sitter to strip code, 50 lines is usually enough.
+    -- Sometimes it is useful to change it to 100.
     lines_to_check = 50,
 
     -- Limit the detection to specific languages.
     -- OPTIONAL: If nil, checks against ALL keys defined in 'lang_mapping'.
+    -- This is likely the best way to improve performance.
     -- limit_languages = { "en", "pt_BR" },
 
     -- Mapping: [Trigram Filename] = [Vim 'spelllang' Option]
@@ -133,9 +137,9 @@ The plugin includes pre-calculated statistical profiles for *64 languages and di
 
 ** How it Works
 
-1.  *Extraction*: When you open a buffer, `autolang` asks Tree-sitter for "content nodes". In a Python file, it gets docstrings; in Markdown, paragraphs.
-2.  *Script Detection*: It scans the text for exclusive scripts. If it finds CJK characters, it detects Chinese/Japanese immediately. If Cyrillic, it detects Russian/Ukrainian.
-3.  *Trigram Analysis*: If the text is Latin-based, it calculates the frequency of 3-letter sequences (trigrams) and compares the "distance" against the loaded language profiles. The profile with the lowest distance wins.
+1. When you open a buffer, `autolang` asks Tree-sitter for "content nodes". In a Python file, it gets docstrings; in Markdown, paragraphs.
+2. It scans the text for exclusive scripts. If it finds CJK characters, it detects Chinese/Japanese immediately. If Cyrillic, it detects Russian/Ukrainian.
+3. If the text is Latin-based, it calculates the frequency of 3-letter sequences (trigrams) and compares the "distance" against the loaded language profiles. The profile with the lowest distance wins.
 
 ** Commands
 
@@ -154,5 +158,5 @@ If the detection seems inaccurate:
 
 ** Credits
 
-- Algorithm based on *N-Gram-Based Text Categorization* by William B. Cavnar and John M. Trenkle (1994).
+- Algorithm based on [[https://dsacl3-2019.github.io/materials/CavnarTrenkle.pdf][N-Gram-Based Text Categorization]] by William B. Cavnar and John M. Trenkle (1994).
 - Trigram data adapted from the [[https://github.com/kent37/guess-language][kent37/guess-language]] project.
