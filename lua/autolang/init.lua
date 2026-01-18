@@ -176,9 +176,8 @@ local ts_queries = {
         (string) @content
     ]],
 }
-local function get_text_with_treesitter(buf)
-    local start = vim.loop.hrtime() -- DEBUG START
 
+local function get_text_with_treesitter(buf)
     local ft = vim.bo[buf].filetype
     local query_string = ts_queries[ft]
 
@@ -204,24 +203,25 @@ local function get_text_with_treesitter(buf)
 
     local text_parts = {}
     local char_count = 0
-    local LIMIT = 2000
+    local LIMIT_CHARS = 2000
 
-    for _, node, _ in query:iter_captures(root, buf, 0, -1) do
+    -- ORG-MODE:
+    -- Define 'stop_row' (ex: line 100).
+    -- Tree-sitter ignores everything below.
+    local stop_row = 100
+
+    for _, node, _ in query:iter_captures(root, buf, 0, stop_row) do
         local node_text = vim.treesitter.get_node_text(node, buf)
-        -- Add spaces to avoid wrong concatenation
+
         table.insert(text_parts, node_text)
 
         char_count = char_count + #node_text
-        if char_count > LIMIT then
+        if char_count > LIMIT_CHARS then
             break
         end
     end
-    local result = table.concat(text_parts, " ")
 
-    local duration = (vim.loop.hrtime() - start) / 1e6 -- DEBUG END
-    print(string.format("Tree-sitter [%s] took: %.4f ms", ft, duration))
-
-    return result
+    return table.concat(text_parts, " ")
 end
 
 local function get_sample_text(buf, lines_limit)
