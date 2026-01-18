@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/suderio/autolang.nvim/compare/v0.1.0...v0.2.0) (2026-01-18)
+
+
+### Features
+
+* script detection of ar, he, th, jp, ko, el ([7e717c1](https://github.com/suderio/autolang.nvim/commit/7e717c1cad5d47355fd93e7a4fe417a74da1a372))
+
 ## [0.1.0](https://github.com/suderio/autolang.nvim/compare/v0.0.4...v0.1.0) (2026-01-18)
 
 ### Features
