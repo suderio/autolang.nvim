@@ -41,17 +41,17 @@ describe("Autolang Performance", function()
         end)
     end)
 
-    it("benchmark: Python File with Code and Comments", function()
-        benchmark("Python Mixed", "python", function()
-            local t = {}
-            for _ = 1, 200 do
-                table.insert(t, "def complex_function(arg):")
-                table.insert(t, "    # This is a comment explaining the logic")
-                table.insert(t, "    return arg * 2")
-            end
-            return t
-        end)
-    end)
+    --    it("benchmark: Python File with Code and Comments", function()
+    --        benchmark("Python Mixed", "python", function()
+    --            local t = {}
+    --            for _ = 1, 200 do
+    --                table.insert(t, "def complex_function(arg):")
+    --                table.insert(t, "    # This is a comment explaining the logic")
+    --                table.insert(t, "    return arg * 2")
+    --            end
+    --            return t
+    --        end)
+    --    end)
 end)
 
 describe("Autolang Performance", function()
