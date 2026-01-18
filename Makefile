@@ -4,6 +4,7 @@ TEST_DEPS_DIR = .tests
 # URLs dos repositórios
 PLENARY_URL = https://github.com/nvim-lua/plenary.nvim
 TREESITTER_URL = https://github.com/nvim-treesitter/nvim-treesitter
+ORGMODE_URL = https://github.com/nvim-orgmode/orgmode
 
 test: prepare
 	@echo "===> Running Tests..."
@@ -19,6 +20,9 @@ prepare:
 		echo "===> Cloning nvim-treesitter..."; \
 		git clone --depth 1 $(TREESITTER_URL) $(TEST_DEPS_DIR)/nvim-treesitter; \
 	fi
-
+	@if [ ! -d "$(TEST_DEPS_DIR)/orgmode" ]; then \
+		echo "===> Cloning orgmode..."; \
+		git clone --depth 1 $(ORGMODE_URL) $(TEST_DEPS_DIR)/orgmode; \
+	fi
 clean:
 	rm -rf $(TEST_DEPS_DIR)
