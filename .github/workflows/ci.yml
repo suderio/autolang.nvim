@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Testa nas versões estável e nightly do Neovim para garantir compatibilidade
+        neovim_version: [stable, nightly]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.neovim_version }}
+
+      - name: Install Test Dependencies
+        # O 'make prepare' já baixa o Plenary e o Treesitter
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make gcc
+          make prepare
+
+      - name: Run Tests
+        run: make test
