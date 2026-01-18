@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.4](https://github.com/suderio/autolang.nvim/compare/v0.0.3...v0.0.4) (2026-01-18)
+
+
+### Bug Fixes
+
+* org mode slugishness ([0d8177c](https://github.com/suderio/autolang.nvim/commit/0d8177c22d7d4d3dbafbb7130c701079c493d0f0))
+
 ## [0.0.3](https://github.com/suderio/autolang.nvim/compare/v0.0.2...v0.0.3) (2026-01-14)
 
 
