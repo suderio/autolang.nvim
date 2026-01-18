@@ -516,7 +516,7 @@ end
 
 local function disambiguate_pt_es(text, detected_lang)
     -- Se não for nem PT nem ES, não faz nada
-    if detected_lang ~= "es" and detected_lang ~= "pt_BR" and detected_lang ~= "pt_PT" then
+    if detected_lang ~= "es" and detected_lang ~= "pt_BR" and detected_lang ~= "pt_PT" and detected_lang ~= "pt" then
         return detected_lang
     end
 
@@ -533,7 +533,7 @@ local function disambiguate_pt_es(text, detected_lang)
     -- Marcadores fortes de Espanhol
     -- ñ, ¿, ¡, ó (ó existe em PT, mas a frequência em final de palavra difere. Vamos focar no ñ)
     if vim.fn.match(text, "[ñ¿¡]") > -1 then
-        if detected_lang == "pt_BR" or detected_lang == "pt_PT" then
+        if detected_lang == "pt_BR" or detected_lang == "pt_PT" or detected_lang == "pt" then
             return "es"
         end
     end

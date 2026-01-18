@@ -60,7 +60,7 @@ describe("Autolang Detection", function()
 
         autolang.detect_and_set()
 
-        assert.are.same("pt_br", vim.bo.spelllang)
+        assert.are.same("pt", vim.bo.spelllang)
     end)
 
     it("should detect Chinese via Unicode Script (Fail-Fast)", function()
