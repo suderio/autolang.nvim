@@ -459,19 +459,49 @@ end
 --------------------------------------------------------------------------------
 
 local function detect_script(text_sample)
-    -- Just the first 1000 characters
     local limit = math.min(#text_sample, 1000)
     local sample = text_sample:sub(1, limit)
 
     for code in utf8_codes(sample) do
-        -- CJK Unified Ideographs: U+4E00 (20992) to U+9FFF (40959)
+        -- CJK Unified Ideographs
         if code >= 0x4E00 and code <= 0x9FFF then
             return "zh"
         end
 
-        -- Cirílic: U+0400 (1024) to U+04FF (1279)
+        -- Hiragana & Katakana
+        -- Hiragana: 3040-309F, Katakana: 30A0-30FF
+        if code >= 0x3040 and code <= 0x30FF then
+            return "jp"
+        end
+
+        -- Hangul
+        if code >= 0xAC00 and code <= 0xD7A3 then
+            return "ko"
+        end
+
+        -- Cirilic
         if code >= 0x0400 and code <= 0x04FF then
             return "ru"
+        end
+
+        -- Greek
+        if code >= 0x0370 and code <= 0x03FF then
+            return "el"
+        end
+
+        -- Hebraic
+        if code >= 0x0590 and code <= 0x05FF then
+            return "he"
+        end
+
+        -- Arabic
+        if code >= 0x0600 and code <= 0x06FF then
+            return "ar"
+        end
+
+        -- Tai
+        if code >= 0x0E00 and code <= 0x0E7F then
+            return "th"
         end
     end
 
@@ -483,27 +513,20 @@ end
 --------------------------------------------------------------------------------
 
 local function apply_heuristics(text, detected_lang)
-    -- Padroniza para caixa baixa para facilitar regex
     local t = text:lower()
 
-    -- 1. REGRA DE OURO DO INGLÊS (Stopwords definitivas)
-    -- Se tiver "the", "and", "is", "of", "to" cercados por espaços, É INGLÊS.
-    -- Isso resolve 99% dos casos de en -> fr/it/es
     if vim.fn.match(t, "\\v\\W(the|and|is|with|for|to|of)\\W") > -1 then
         return "en"
     end
 
-    -- 2. REGRA DE OURO DO PORTUGUÊS
-    -- Palavras/caracteres que "matam" a charada pro PT
-    -- "não", "são", "está", "você", "com" (Catalão usa 'amb', Esp usa 'con')
     if vim.fn.match(t, "\\v\\W(n[ãa]o|s[ãa]o|est[áa]|voc[êe]|com|uma)\\W") > -1 then
-        return "pt_BR" -- ou pt_PT
+        return "pt_BR" -- TODO check if pt or pt_PT
     end
     if vim.fn.match(t, "[ãõçêô]") > -1 then
         return "pt_BR"
     end
 
-    -- 3. Desempate PT vs ES vs CA (Catalão)
+    -- PT vs ES vs CA
     if
         detected_lang == "pt_BR"
         or detected_lang == "pt"
@@ -511,17 +534,14 @@ local function apply_heuristics(text, detected_lang)
         or detected_lang == "es"
         or detected_lang == "ca"
     then
-        -- Marcadores de Espanhol: ñ, ¿, ¡, ' y ', ' con '
+        -- Spanish: ñ, ¿, ¡, ' y ', ' con '
         if vim.fn.match(t, "[ñ¿¡]") > -1 or vim.fn.match(t, "\\v\\W(y|con|los|las|una)\\W") > -1 then
             return "es"
         end
 
-        -- Se detectou Catalão (ca), mas não tem marcadores óbvios de catalão,
-        -- e o usuário provavelmente é BR, forçamos PT.
-        -- Catalão comuns: 'i' (e), 'amb' (com), 'els' (os)
+        -- Catalan: 'i' (e), 'amb' (com), 'els' (os)
         if detected_lang == "ca" then
             if vim.fn.match(t, "\\v\\W(i|amb|els)\\W") == -1 then
-                -- Se não tem "amb" nem "els", provavelmente é falso positivo de PT
                 return "pt_BR"
             end
         end
@@ -575,7 +595,16 @@ function M.detect_and_set()
     local langs_to_check = M.opts.limit_languages or vim.tbl_keys(M.opts.lang_mapping)
 
     for _, lang_code in ipairs(langs_to_check) do
-        if lang_code ~= "zh" and lang_code ~= "ru" then
+        if
+            lang_code ~= "zh"
+            and lang_code ~= "ru"
+            and lang_code ~= "jp"
+            and lang_code ~= "ko"
+            and lang_code ~= "el"
+            and lang_code ~= "he"
+            and lang_code ~= "ar"
+            and lang_code ~= "th"
+        then
             local lang_profile = load_lang_profile(lang_code)
             if lang_profile then
                 local dist = calculate_distance(doc_profile, lang_profile)

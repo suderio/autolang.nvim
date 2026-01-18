@@ -8,7 +8,7 @@ M.defaults = {
     interactive = false,
 
     -- Exemple: { "en", "pt" }
-    limit_languages = { "en", "pt_BR", "es" },
+    limit_languages = { "en", "pt_BR", "es", "zh" },
 
     -- Achtung:
     -- Keys must be the name of the trigram file
@@ -22,7 +22,6 @@ M.defaults = {
         fr = "fr", -- Loads: lua/autolang/trigrams/fr.lua
         de = "de", -- Loads: lua/autolang/trigrams/de.lua
         af = "af",
-        ar = "ar",
         az = "az",
         bg = "bg",
         ca = "ca",
@@ -82,8 +81,13 @@ M.defaults = {
         -- Script detection (Unicode)
         -- These are used when script detection (CJK/Cirílico) is enough.
         -- They do not need to be inside the trigrams directory.
+        ar = "ar",
         zh = "cjk", -- Chinese
         ru = "ru", -- Russian
+        jp = "cjk",
+        ko = "ko",
+        el = "el",
+        he = "he",
     },
 }
 
