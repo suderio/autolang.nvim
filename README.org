@@ -75,9 +75,9 @@ require("autolang").setup({
     lines_to_check = 50,
 
     -- Limit the detection to specific languages.
-    -- OPTIONAL: If nil, checks against ALL keys defined in 'lang_mapping'.
+    -- OPTIONAL: If nil, checks against ALL languaages (60+) defined in 'lang_mapping'.
     -- This is likely the best way to improve performance.
-    -- limit_languages = { "en", "pt_BR" },
+    limit_languages = { "en", "pt_BR" },
                          })
 
 #+END_SRC
@@ -142,7 +142,7 @@ If the detection seems inaccurate:
 1. Run =:checkhealth autolang= to ensure dependencies are met.
 2. If you are editing a code file (e.g., Python), ensure you have the relevant Tree-sitter parser installed: =:TSInstall python=.
 3. If the file is very short (< 30 characters), detection is skipped to avoid false positives.
-  
+
 ** Known Problems
 
 - Org file processing is very slow. Looks like the complexity of its Tree-sitter is the culprit.

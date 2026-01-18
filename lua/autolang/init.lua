@@ -78,8 +78,6 @@ local ts_queries = {
 
     html = [[ (text) @content ]],
 
-    xml = [[ (text) @content ]],
-
     latex = [[ (text) @content ]],
 
     gitcommit = [[ (message) @content ]],
@@ -162,6 +160,137 @@ local ts_queries = {
         (string) @content
     ]],
 
+    cs = [[
+        (comment) @content
+        (string_literal) @content
+        (interpolated_string_expression) @content
+    ]],
+
+    kotlin = [[
+        (comment) @content
+        (line_comment) @content
+        (multiline_comment) @content
+        (string_literal) @content
+    ]],
+
+    swift = [[
+        (line_comment) @content
+        (block_comment) @content
+        (line_string_literal) @content
+        (multiline_string_literal) @content
+    ]],
+
+    scala = [[
+        (comment) @content
+        (string_literal) @content
+        (interpolated_string_expression) @content
+    ]],
+
+    php = [[
+        (comment) @content
+        (string) @content
+        (encapsed_string) @content
+        (heredoc) @content
+    ]],
+
+    ruby = [[
+        (comment) @content
+        (string) @content
+        (heredoc_body) @content
+    ]],
+
+    ps1 = [[
+        (comment) @content
+        (string_literal) @content
+        (expandable_string_literal) @content
+    ]],
+
+    perl = [[
+        (comment) @content
+        (string_literal) @content
+    ]],
+
+    sql = [[
+        (comment) @content
+        (string_literal) @content
+    ]],
+
+    r = [[
+        (comment) @content
+        (string) @content
+    ]],
+
+    julia = [[
+        (line_comment) @content
+        (block_comment) @content
+        (string_literal) @content
+        (triple_string_literal) @content
+    ]],
+
+    matlab = [[
+        (comment) @content
+        (string_literal) @content
+        (char_literal) @content
+    ]],
+
+    elixir = [[
+        (comment) @content
+        (string) @content
+        (sigil) @content
+        (heredoc) @content
+    ]],
+
+    erlang = [[
+        (comment) @content
+        (string) @content
+    ]],
+
+    haskell = [[
+        (comment) @content
+        (string) @content
+    ]],
+
+    clojure = [[
+        (comment) @content
+        (string_literal) @content
+        (regex_literal) @content
+    ]],
+
+    lisp = [[
+        (comment) @content
+        (string_literal) @content
+    ]],
+
+    ocaml = [[
+        (comment) @content
+        (string_literal) @content
+        (quoted_string) @content
+    ]],
+
+    fsharp = [[
+        (line_comment) @content
+        (block_comment) @content
+        (string) @content
+        (triple_quoted_string) @content
+    ]],
+
+    zig = [[
+        (line_comment) @content
+        (doc_comment) @content
+        (string_literal) @content
+        (multiline_string_literal) @content
+    ]],
+
+    fortran = [[
+        (comment) @content
+        (string_literal) @content
+    ]],
+
+    cobol = [[
+        (comment_line) @content
+        (alphanumeric_literal) @content
+    ]],
+
     -- === Data ===
 
     yaml = [[
@@ -176,168 +305,7 @@ local ts_queries = {
         (string) @content
     ]],
 
-    -- === Enterprise / OOP ===
-
-    -- C# (Filetype: cs)
-    cs = [[
-        (comment) @content
-        (string_literal) @content
-        (interpolated_string_expression) @content
-    ]],
-
-    -- Kotlin
-    kotlin = [[
-        (comment) @content
-        (line_comment) @content
-        (multiline_comment) @content
-        (string_literal) @content
-    ]],
-
-    -- Swift
-    swift = [[
-        (line_comment) @content
-        (block_comment) @content
-        (line_string_literal) @content
-        (multiline_string_literal) @content
-    ]],
-
-    -- Scala
-    scala = [[
-        (comment) @content
-        (string_literal) @content
-        (interpolated_string_expression) @content
-    ]],
-
-    -- === Scripting & Dinâmicas ===
-
-    -- PHP
-    php = [[
-        (comment) @content
-        (string) @content
-        (encapsed_string) @content
-        (heredoc) @content
-    ]],
-
-    -- Ruby
-    ruby = [[
-        (comment) @content
-        (string) @content
-        (heredoc_body) @content
-    ]],
-
-    -- PowerShell (Filetype: ps1)
-    ps1 = [[
-        (comment) @content
-        (string_literal) @content
-        (expandable_string_literal) @content
-    ]],
-
-    -- Perl
-    perl = [[
-        (comment) @content
-        (string_literal) @content
-    ]],
-
-    -- === Dados & Científico ===
-
-    -- SQL
-    sql = [[
-        (comment) @content
-        (string_literal) @content
-    ]],
-
-    -- R
-    r = [[
-        (comment) @content
-        (string) @content
-    ]],
-
-    -- Julia
-    julia = [[
-        (line_comment) @content
-        (block_comment) @content
-        (string_literal) @content
-        (triple_string_literal) @content
-    ]],
-
-    -- MATLAB
-    matlab = [[
-        (comment) @content
-        (string_literal) @content
-        (char_literal) @content
-    ]],
-
-    -- === Funcionais ===
-
-    -- Elixir
-    elixir = [[
-        (comment) @content
-        (string) @content
-        (sigil) @content
-        (heredoc) @content
-    ]],
-
-    -- Erlang
-    erlang = [[
-        (comment) @content
-        (string) @content
-    ]],
-
-    -- Haskell
-    haskell = [[
-        (comment) @content
-        (string) @content
-    ]],
-
-    -- Clojure
-    clojure = [[
-        (comment) @content
-        (string_literal) @content
-        (regex_literal) @content
-    ]],
-
-    -- Common Lisp
-    lisp = [[
-        (comment) @content
-        (string_literal) @content
-    ]],
-
-    -- OCaml
-    ocaml = [[
-        (comment) @content
-        (string_literal) @content
-        (quoted_string) @content
-    ]],
-
-    -- F# (Filetype: fsharp)
-    fsharp = [[
-        (line_comment) @content
-        (block_comment) @content
-        (string) @content
-        (triple_quoted_string) @content
-    ]],
-
-    -- === Modernas & Legado ===
-
-    -- Zig (Importante: separa doc_comment /// de line_comment //)
-    zig = [[
-        (line_comment) @content
-        (doc_comment) @content
-        (string_literal) @content
-        (multiline_string_literal) @content
-    ]],
-
-    -- Fortran
-    fortran = [[
-        (comment) @content
-        (string_literal) @content
-    ]],
-
-    -- COBOL
-    cobol = [[
-        (comment_line) @content
-        (alphanumeric_literal) @content
-    ]],
+    xml = [[ (text) @content ]],
 }
 
 local function get_text_with_treesitter(buf)
