@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.0](https://github.com/suderio/autolang.nvim/compare/v0.0.4...v0.1.0) (2026-01-18)
+
+
+### Features
+
+* Added support to more parsers ([de18334](https://github.com/suderio/autolang.nvim/commit/de18334d71ff028b9194e091ec691f079691b092))
+* All languages are now supported by default ([16f650d](https://github.com/suderio/autolang.nvim/commit/16f650d1d8b827fcf0bee0d94921a0717fedf8eb))
+
 ## [0.0.4](https://github.com/suderio/autolang.nvim/compare/v0.0.3...v0.0.4) (2026-01-18)
 
 
