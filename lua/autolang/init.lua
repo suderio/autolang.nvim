@@ -479,34 +479,54 @@ local function detect_script(text_sample)
 end
 
 --------------------------------------------------------------------------------
--- Função de Desempate (PT vs ES)
+-- Added Heuristic
 --------------------------------------------------------------------------------
 
-local function disambiguate_pt_es(text, detected_lang)
-    -- Se não for nem PT nem ES, não faz nada
-    if detected_lang ~= "es" and detected_lang ~= "pt_BR" and detected_lang ~= "pt_PT" and detected_lang ~= "pt" then
-        return detected_lang
+local function apply_heuristics(text, detected_lang)
+    -- Padroniza para caixa baixa para facilitar regex
+    local t = text:lower()
+
+    -- 1. REGRA DE OURO DO INGLÊS (Stopwords definitivas)
+    -- Se tiver "the", "and", "is", "of", "to" cercados por espaços, É INGLÊS.
+    -- Isso resolve 99% dos casos de en -> fr/it/es
+    if vim.fn.match(t, "\\v\\W(the|and|is|with|for|to|of)\\W") > -1 then
+        return "en"
     end
 
-    -- Marcadores fortes de Português
-    -- ã, õ, ç, ê, ô, à (o til e a cedilha são os mais fortes)
-    if vim.fn.match(text, "[ãõçêôà]") > -1 then
-        -- Se detectou ES mas tem 'ç', vira PT-BR (ou PT-PT se preferir lógica mais complexa)
-        if detected_lang == "es" then
-            return "pt_BR"
-        end
-        return detected_lang
+    -- 2. REGRA DE OURO DO PORTUGUÊS
+    -- Palavras/caracteres que "matam" a charada pro PT
+    -- "não", "são", "está", "você", "com" (Catalão usa 'amb', Esp usa 'con')
+    if vim.fn.match(t, "\\v\\W(n[ãa]o|s[ãa]o|est[áa]|voc[êe]|com|uma)\\W") > -1 then
+        return "pt_BR" -- ou pt_PT
+    end
+    if vim.fn.match(t, "[ãõçêô]") > -1 then
+        return "pt_BR"
     end
 
-    -- Marcadores fortes de Espanhol
-    -- ñ, ¿, ¡, ó (ó existe em PT, mas a frequência em final de palavra difere. Vamos focar no ñ)
-    if vim.fn.match(text, "[ñ¿¡]") > -1 then
-        if detected_lang == "pt_BR" or detected_lang == "pt_PT" or detected_lang == "pt" then
+    -- 3. Desempate PT vs ES vs CA (Catalão)
+    if
+        detected_lang == "pt_BR"
+        or detected_lang == "pt"
+        or detected_lang == "pt_PT"
+        or detected_lang == "es"
+        or detected_lang == "ca"
+    then
+        -- Marcadores de Espanhol: ñ, ¿, ¡, ' y ', ' con '
+        if vim.fn.match(t, "[ñ¿¡]") > -1 or vim.fn.match(t, "\\v\\W(y|con|los|las|una)\\W") > -1 then
             return "es"
         end
+
+        -- Se detectou Catalão (ca), mas não tem marcadores óbvios de catalão,
+        -- e o usuário provavelmente é BR, forçamos PT.
+        -- Catalão comuns: 'i' (e), 'amb' (com), 'els' (os)
+        if detected_lang == "ca" then
+            if vim.fn.match(t, "\\v\\W(i|amb|els)\\W") == -1 then
+                -- Se não tem "amb" nem "els", provavelmente é falso positivo de PT
+                return "pt_BR"
+            end
+        end
     end
 
-    -- Fallback: Se não tem caracteres especiais, confia nos trigramas
     return detected_lang
 end
 
@@ -568,7 +588,7 @@ function M.detect_and_set()
     end
 
     if detected_lang then
-        detected_lang = disambiguate_pt_es(text, detected_lang)
+        detected_lang = apply_heuristics(text, detected_lang)
     end
 
     if detected_lang then

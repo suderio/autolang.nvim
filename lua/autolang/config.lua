@@ -8,7 +8,7 @@ M.defaults = {
     interactive = false,
 
     -- Exemple: { "en", "pt" }
-    limit_languages = nil,
+    limit_languages = { "en", "pt_BR", "es" },
 
     -- Achtung:
     -- Keys must be the name of the trigram file

@@ -37,7 +37,29 @@ end
 if ok_ts then
     print("==> Setup Treesitter...")
     configs.setup({
-        ensure_installed = { "lua", "python", "markdown", "query", "org" },
+        ensure_installed = {
+            "lua",
+            "python",
+            "markdown",
+            "query",
+            "org",
+            "javascript",
+            "typescript",
+            "html",
+            "css",
+            "json",
+            "yaml",
+            "toml",
+            "c",
+            "cpp",
+            "rust",
+            "go",
+            "java",
+            "c_sharp",
+            "php",
+            "ruby",
+            "bash",
+        },
         sync_install = true,
         highlight = { enable = true },
     })
