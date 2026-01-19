@@ -3,6 +3,7 @@
 #+BEGIN_CENTER
   [[http://www.lua.org][https://img.shields.io/badge/Lua-blue.svg?style=for-the-badge&logo=lua]]
   [[https://neovim.io][https://img.shields.io/badge/Neovim%200.11+-green.svg?style=for-the-badge&logo=neovim]]
+  [[https://opensource.org/licenses/MIT][https://img.shields.io/badge/MIT-yellow.svg?style=for-the-badge]]
 #+END_CENTER
 
 An intelligent, context-aware plugin for Neovim that automatically detects the natural language of the current buffer and adjusts the =spelllang= option.
