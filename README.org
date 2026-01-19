@@ -1,5 +1,14 @@
 * Autolang.nvim
 
+  [![Lua](https://img.shields.io/badge/Lua-blue.svg?style=for-the-badge&logo=lua)](http://www.lua.org)
+  [![Neovim](https://img.shields.io/badge/Neovim%200.10+-green.svg?style=for-the-badge&logo=neovim)](https://neovim.io)
+  [![MIT](https://img.shields.io/badge/MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+  ![GitHub Release](https://img.shields.io/github/v/release/suderio/autolang.nvim)
+  ![LuaRocks](https://img.shields.io/luarocks/v/suderio/autolang.nvim)
+  ![GitHub License](https://img.shields.io/github/license/suderio/autolang.nvim)
+  ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/suderio/autolang.nvim/ci.yml)
+
+
 An intelligent, context-aware plugin for Neovim that automatically detects the natural language of the current buffer and adjusts the =spelllang= option.
 
 Unlike naive language detectors, it uses *Tree-sitter* to extract only the relevant text (comments, strings, and prose), ignoring code syntax to prevent false positives. It employs the *Trigram-based text categorization* for high accuracy even on short texts.
