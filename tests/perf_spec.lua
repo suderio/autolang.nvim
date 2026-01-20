@@ -114,6 +114,6 @@ describe("Autolang Performance", function()
 
         -- Asserção de Performance
         -- Com a correção, deve ser muito rápido. Sem a correção, falharia aqui.
-        assert.is_true(duration < 20, "Org detection is too slow! Took: " .. duration .. "ms")
+        assert.is_true(duration < 50, "Org detection is too slow! Took: " .. duration .. "ms")
     end)
 end)

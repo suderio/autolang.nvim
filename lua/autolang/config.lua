@@ -10,6 +10,10 @@ M.defaults = {
     -- Exemple: { "en", "pt" }
     limit_languages = { "en", "pt_BR", "es", "zh" },
 
+    number_of_spelllangs = 2,
+
+    keep_default_spelllang = false,
+
     -- Achtung:
     -- Keys must be the name of the trigram file
     -- inside 'lua/autolang/trigrams/' (without .lua extension).

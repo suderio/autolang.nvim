@@ -45,7 +45,7 @@ describe("Autolang Detection", function()
 
         autolang.detect_and_set()
 
-        assert.are.same("en", vim.bo.spelllang)
+        assert.is_true(string.sub(vim.bo.spelllang, 1, #"en") == "en")
     end)
 
     it("should detect Portuguese in Python comments (ignoring code)", function()
@@ -60,7 +60,7 @@ describe("Autolang Detection", function()
 
         autolang.detect_and_set()
 
-        assert.are.same("pt_br", vim.bo.spelllang)
+        assert.is_true(string.sub(vim.bo.spelllang, 1, #"pt_br") == "pt_br")
     end)
 
     it("should detect Chinese via Unicode Script (Fail-Fast)", function()
@@ -338,7 +338,7 @@ describe("Autolang Comprehensive Suite", function()
                     string.format("Expected CJK/ZH but got '%s' in %s", current, case.ft)
                 )
             elseif expected == "pt_br" then
-                assert.are.same("pt_br", current)
+                assert.is_true(string.sub(current, 1, 5) == "pt_br")
             else
                 -- Para inglês, aceitamos 'en', 'en_us', 'en_gb'
                 assert.is_true(

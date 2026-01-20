@@ -554,6 +554,37 @@ end
 -- Main logic
 --------------------------------------------------------------------------------
 
+--------------------------------------------------------------------------------
+-- Main logic
+--------------------------------------------------------------------------------
+
+local function merge_spelllangs(new_langs, current_langs, keep)
+    local final = {}
+    local seen = {}
+
+    -- Add new detected languages
+    for _, lang in ipairs(new_langs) do
+        if not seen[lang] then
+            table.insert(final, lang)
+            seen[lang] = true
+        end
+    end
+
+    -- Add current languages if keep is true
+    if keep then
+        local parts = vim.split(current_langs, ",")
+        for _, lang in ipairs(parts) do
+            lang = vim.trim(lang)
+            if lang ~= "" and not seen[lang] then
+                table.insert(final, lang)
+                seen[lang] = true
+            end
+        end
+    end
+
+    return table.concat(final, ",")
+end
+
 function M.detect_and_set()
     if not M.opts.auto_detect then
         return
@@ -565,10 +596,6 @@ function M.detect_and_set()
         return
     end
 
-    if vim.bo[buf].buftype ~= "" or not vim.api.nvim_buf_is_valid(buf) then
-        return
-    end
-
     local raw_text = get_sample_text(buf, M.opts.lines_to_check)
 
     -- Without enough text, abort
@@ -576,69 +603,87 @@ function M.detect_and_set()
         return
     end
 
+    local current_spelllang = vim.bo[buf].spelllang
     local script_lang = detect_script(raw_text)
 
+    -- 1. Script Detection (Fail Fast)
     if script_lang ~= "latin" then
         local target = M.opts.lang_mapping[script_lang]
         if target then
-            vim.bo[buf].spelllang = target
+            local final_spelllang = merge_spelllangs({ target }, current_spelllang, M.opts.keep_default_spelllang)
+            if vim.bo[buf].spelllang ~= final_spelllang then
+                vim.bo[buf].spelllang = final_spelllang
+                vim.notify("Autolang: " .. final_spelllang, vim.log.levels.INFO)
+            end
         end
         return
     end
 
+    -- 2. Trigram Detection
     local text = clean_text(raw_text)
     local doc_profile = get_document_profile(text)
 
-    local lowest_distance = math.huge
-    local detected_lang = nil
-
+    local candidates = {}
     local langs_to_check = M.opts.limit_languages or vim.tbl_keys(M.opts.lang_mapping)
 
     for _, lang_code in ipairs(langs_to_check) do
-        if
-            lang_code ~= "zh"
-            and lang_code ~= "ru"
-            and lang_code ~= "jp"
-            and lang_code ~= "ko"
-            and lang_code ~= "el"
-            and lang_code ~= "he"
-            and lang_code ~= "ar"
-            and lang_code ~= "th"
-        then
+        -- Skip non-latin profiles that are handled by script detection
+        if not vim.tbl_contains({ "zh", "ru", "jp", "ko", "el", "he", "ar", "th" }, lang_code) then
             local lang_profile = load_lang_profile(lang_code)
             if lang_profile then
                 local dist = calculate_distance(doc_profile, lang_profile)
-                if dist < lowest_distance then
-                    lowest_distance = dist
-                    detected_lang = lang_code
-                end
+                table.insert(candidates, { lang = lang_code, dist = dist })
             end
         end
     end
 
-    if detected_lang then
-        detected_lang = apply_heuristics(text, detected_lang)
+    -- Sort by distance (lower is better)
+    table.sort(candidates, function(a, b)
+        return a.dist < b.dist
+    end)
+
+    if #candidates == 0 then
+        return
     end
 
-    if detected_lang then
-        local target_spelllang = M.opts.lang_mapping[detected_lang]
-        if target_spelllang and vim.bo[buf].spelllang ~= target_spelllang then
-            local function apply()
-                vim.bo[buf].spelllang = target_spelllang
-                vim.notify("Autolang: " .. detected_lang, vim.log.levels.INFO)
-            end
+    -- 3. Select Top N Languages
+    local top_n = M.opts.number_of_spelllangs or 1
+    local selected_langs = {}
 
-            if M.opts.interactive then
-                vim.ui.select({ "Yes", "No" }, {
-                    prompt = "Change language to " .. target_spelllang .. "?",
-                }, function(choice)
-                    if choice == "Yes" then
-                        apply()
-                    end
-                end)
-            else
-                apply()
-            end
+    -- Apply heuristics to the WINNER only
+    -- If heuristics change the winner (e.g. pt -> pt_BR), we replace the winner
+    local winner = candidates[1].lang
+    local heuristic_winner = apply_heuristics(text, winner)
+    
+    table.insert(selected_langs, M.opts.lang_mapping[heuristic_winner] or heuristic_winner)
+
+    -- Add runners-up (only if we need more than 1)
+    if top_n > 1 then
+        for i = 2, math.min(#candidates, top_n) do
+            local code = candidates[i].lang
+            table.insert(selected_langs, M.opts.lang_mapping[code] or code)
+        end
+    end
+
+    -- 4. Apply Changes
+    local final_spelllang = merge_spelllangs(selected_langs, current_spelllang, M.opts.keep_default_spelllang)
+
+    if vim.bo[buf].spelllang ~= final_spelllang then
+        local function apply()
+            vim.bo[buf].spelllang = final_spelllang
+            vim.notify("Autolang: " .. final_spelllang, vim.log.levels.INFO)
+        end
+
+        if M.opts.interactive then
+            vim.ui.select({ "Yes", "No" }, {
+                prompt = "Change language to " .. final_spelllang .. "?",
+            }, function(choice)
+                if choice == "Yes" then
+                    apply()
+                end
+            end)
+        else
+            apply()
         end
     end
 end
