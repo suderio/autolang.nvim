@@ -92,6 +92,10 @@ The plugin understands the structure of these files. It extracts text from speci
 | *Web Dev* | =javascript=, =typescript=, =tsx=, =javascriptreact=, =css=, =scss=, =json=, =yaml=, =toml= |
 | *Backend/Sys* | =lua=, =python=, =rust=, =go=, =c=, =cpp=, =java=, =bash= |
 
+The complete list of supportedd filetypes can be found at https://github.com/suderio/autolang.nvim/tree/queries/.
+
+You can add or change support for languages yourself. See `:h autolang-queries` in Nvim.
+
 *Note:* If a filetype is not listed or Tree-sitter is missing, the plugin falls back to analyzing the raw lines of the file.
 
 *** 2. Supported Languages (Trigram Profiles)

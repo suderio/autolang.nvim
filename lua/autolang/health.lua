@@ -5,10 +5,11 @@ function M.check()
 	health.start("Autolang.nvim Diagnostics")
 
 	-- Check 1: Tree-sitter
-	if pcall(require, "nvim-treesitter") then
-		health.ok("nvim-treesitter is installed.")
+	local query = vim.treesitter.query.get('lua', 'autolang')
+	if query then
+		health.ok('Tree-sitter queries found')
 	else
-		health.warn("nvim-treesitter not found. Falling back to raw text analysis (less accurate).")
+		health.error('Tree-sitter queries not found.', 'Add the autolang repository to the runtimepath.')
 	end
 
 	-- Check 2: Trigrams existence
@@ -16,7 +17,7 @@ function M.check()
 	if en_exists then
 		health.ok("Trigram data files found.")
 	else
-		health.error("Trigram data files missing. Make sure 'lua/autolang/trigrams/' is populated.")
+		health.error("Trigram data files missing.', 'Make sure 'lua/autolang/trigrams/' is populated.")
 	end
 
 	-- Check 3: Basic configuration
