@@ -1,0 +1,2 @@
+(paragraph) @content
+(inline) @content
