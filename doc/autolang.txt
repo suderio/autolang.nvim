@@ -91,6 +91,19 @@ below:
     })
 <
 
+                                                             *autolang-queries*
+Autolang uses Tree-sitter queries to detect natural languages of relevant
+text. To change or add captures for filetype `<filetype>`, create a file in
+your config directory `after/queries/<filetype>/autolang.scm` and capture the
+node with `@content`. See |treesitter-query| for more information. Example:
+
+>query
+    ; extends
+    ; ^this means we also include the defaults from autolang.nvim
+
+    (string) @content
+<
+
 ==============================================================================
 4. COMMANDS                                                 *autolang-commands*
 
